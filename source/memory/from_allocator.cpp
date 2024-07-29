@@ -59,23 +59,23 @@ public:
     liber_internal_allocator() : all_allocators(LIBER_MY_ALLOCATORS_RESOURCE) {
         mi_option_set(mi_option_purge_delay, 0);
         {
-            WinTypes::NamedMutex mutex{ LIBER_SINGLETON_OVERRIDE_MUTEX };
-            std::scoped_lock lock{ mutex };
+            // WinTypes::NamedMutex mutex{ LIBER_SINGLETON_OVERRIDE_MUTEX };
+            // std::scoped_lock lock{ mutex };
             // Replace the CSMemory singleton responsible
             // for setting up allocators
             // Check fd4/detail/fd4_memory and coresystem/memory
-            CS::CSMemory*& csmem = *reinterpret_cast<CS::CSMemory**>(
-                liber::symbol<"CS::CSMemory::instance">::get());
-            MemoryBarrier();
-            if (!csmem)
-                csmem = new CS::CSMemory();
-            liber_internal_allocator*& sysalloc =
-                *reinterpret_cast<liber_internal_allocator**>(
-                    liber::symbol<"DLKR::DLAllocator::SYSTEM">::get());
+            // CS::CSMemory*& csmem = *reinterpret_cast<CS::CSMemory**>(
+            //     liber::symbol<"CS::CSMemory::instance">::get());
+            // MemoryBarrier();
+            // if (!csmem)
+            //     csmem = new CS::CSMemory();
+            // liber_internal_allocator*& sysalloc =
+            //     *reinterpret_cast<liber_internal_allocator**>(
+            //         liber::symbol<"DLKR::DLAllocator::SYSTEM">::get());
             // Transition: ALWAYS replace the system allocator,
             // even if it had been replaced previously
-            MemoryBarrier();
-            sysalloc = this;
+            // MemoryBarrier();
+            // sysalloc = this;
         }
         // Keep a list of all libER allocator instances
         std::scoped_lock lock{ this->all_allocators };
